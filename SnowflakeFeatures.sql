@@ -1,3 +1,4 @@
+
 INSERT into TEST_DB1.EMPLOYEE.EMPLOYEEDETAILS values (1,'Kushal','Mishra');
 
 Select * from EMPLOYEEDETAILS;
@@ -341,3 +342,77 @@ Create or replace file format csv_ff_clone clone csv_ff;
 //File format CSV_FF_CLONE successfully created.
 
 //Creating a file format clone is allowed
+
+Show SEQUENCES;
+
+CREATE or REPLACE SEQUENCE SEQEVEN_CLONE clone SEQEVEN;
+Alter sequence seqeven_clone set increment = 3;
+
+select SEQEVEN.nextval,SEQEVEN_CLONE.nextval;
+
+//While cloning the sequence, when you alter the Sequence, Next val will only change after the second runtime. Because in any
+//sequence nextval is already stored for next iteration. change will only take place in next to next iteration. 
+//Sequence object already hold the next value
+Create or REPLACE DATABASE TEST_DB2 clone TEST_DB1
+
+CREATE or REPLACE SCHEMA EMPLOYEE2 clone Employee;
+
+select * from Employee.EMPLOYEEDETAILS;
+create or replace stream stream1 on table employeedetails;
+INSERT into employeedetails values(3,'Romit','Singh')
+Delete from employeedetails where employeeid = 2;
+
+
+
+Select * from stream1;
+Select * from streamview;
+CREATE or replace view streamview as 
+
+Select * from stream1;
+
+select * from stream1;
+
+SELECT * from emp;
+CREATE or replace view emp as 
+Select * from emp;
+
+//Creating a Stream
+
+Select * from SIMPLE_ORDER;
+CREATE or Replace stream Simple_order on table SIMPLE_ORDER;
+//Error Object 'SIMPLE_ORDER' already exists as TABLE
+CREATE or Replace stream Simple_order_Stream on table SIMPLE_ORDER;
+select * from  Simple_order_Stream;
+
+//20	20	Y	2841262.00	2023-12-18	3
+INSERT into simple_order  
+Select * from simple_order where orderkey = 70 and totalprice = 540756.00;
+
+
+select * from  Simple_order_Stream;
+
+Delete from simple_order where orderkey = 70 and totalprice = 540756.00;
+
+select * from  Simple_order_Stream 540756.00;
+
+//Storing Customer stream data
+Create or REPLACE table CDC_CHANGES as Select * from Simple_order_Stream;
+Select current_database(),current_schema();
+
+Show Streams;
+
+
+desc stream Simple_order_Stream;
+
+Select get_ddl('stream','Simple_order_Stream');
+
+//We can alter the stream object as well
+
+//For example:
+
+alter stream Simple_order_stream set comment = 'This is my new comment';
+
+desc stream Simple_order_Stream;
+
+Create or Replace stream append_only_stream on table simple_order
+append_only = True;
